@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hotels/main.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 const dGreen = Color(0xFF54D3C2);
@@ -20,10 +19,16 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final padding = EdgeInsets.all(
+      isMobile ? screenWidth * 0.05 : screenWidth * 0.1,
+    ); // 5% or 10% of width
+
     return Scaffold(
       appBar: MyAppBar(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(50),
+        padding: padding,
         child: Column(
           children: [
             Container(
@@ -51,27 +56,29 @@ class _CalendarPageState extends State<CalendarPage> {
                   formatButtonVisible: false,
                   titleCentered: true,
                   titleTextStyle: GoogleFonts.nunito(
-                    fontSize: 20,
+                    fontSize: isMobile ? 18 : 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
-                  leftChevronIcon: Icon(Icons.chevron_left, color: d_green),
-                  rightChevronIcon: Icon(Icons.chevron_right, color: d_green),
+                  leftChevronIcon: Icon(Icons.chevron_left, color: dGreen),
+                  rightChevronIcon: Icon(Icons.chevron_right, color: dGreen),
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
                   weekdayStyle: GoogleFonts.nunito(
                     color: Colors.black87,
                     fontWeight: FontWeight.w600,
+                    fontSize: isMobile ? 12 : 14,
                   ),
                   weekendStyle: GoogleFonts.nunito(
                     color: Colors.black87,
                     fontWeight: FontWeight.w600,
+                    fontSize: isMobile ? 12 : 14,
                   ),
                 ),
                 calendarStyle: CalendarStyle(
                   isTodayHighlighted: true,
                   todayDecoration: BoxDecoration(
-                    color: d_green.withOpacity(0.5),
+                    color: dGreen.withOpacity(0.5),
                     shape: BoxShape.circle,
                   ),
                   rangeHighlightColor: dGreen.withOpacity(0.3),
@@ -106,7 +113,7 @@ class _CalendarPageState extends State<CalendarPage> {
               Text(
                 "Sélection : ${_rangeStart!.day}/${_rangeStart!.month} - ${_rangeEnd!.day}/${_rangeEnd!.month}",
                 style: GoogleFonts.nunito(
-                  fontSize: 16,
+                  fontSize: isMobile ? 14 : 16,
                   fontWeight: FontWeight.bold,
                   color: dGreen,
                 ),

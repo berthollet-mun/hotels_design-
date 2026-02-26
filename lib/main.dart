@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hotels/calendar_page.dart';
+import 'package:hotel/calendar_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,35 +43,45 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        "Explore",
-        style: GoogleFonts.nunito(
-          color: Colors.black,
-          fontWeight: FontWeight.w800,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [d_green.withOpacity(0.8), d_green],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Colors.grey[800], size: 20),
-        onPressed: () {},
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.favorite_border_outlined,
-            color: Colors.grey[800],
-            size: 20,
+      child: AppBar(
+        title: Text(
+          "Explore",
+          style: GoogleFonts.nunito(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
           onPressed: () {},
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.favorite_border_outlined,
+              color: Colors.white,
+              size: 20,
+            ),
+            onPressed: () {},
+          ),
 
-        IconButton(
-          icon: Icon(Icons.place, color: Colors.grey[800], size: 20),
-          onPressed: () {},
-        ),
-      ],
-      centerTitle: true,
-      backgroundColor: Colors.white,
+          IconButton(
+            icon: Icon(Icons.place, color: Colors.white, size: 20),
+            onPressed: () {},
+          ),
+        ],
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
     );
   }
 }
@@ -81,9 +91,24 @@ class SearchSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final padding = EdgeInsets.fromLTRB(
+      isMobile ? 10 : 20,
+      25,
+      isMobile ? 10 : 20,
+      10,
+    );
+
     return Container(
-      color: Colors.grey[200],
-      padding: EdgeInsets.fromLTRB(10, 25, 10, 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.grey[200]!, Colors.grey[100]!],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      padding: padding,
       child: Column(
         children: [
           Row(
@@ -91,7 +116,6 @@ class SearchSection extends StatelessWidget {
               Padding(padding: EdgeInsets.all(5)),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(left: 10),
                   height: 50,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -107,6 +131,7 @@ class SearchSection extends StatelessWidget {
                   child: TextField(
                     decoration: InputDecoration(
                       border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20),
                       hintText: "London",
                     ),
                   ),
@@ -250,11 +275,15 @@ class HotelSection extends StatelessWidget {
     },
   ];
 
-  HotelSection({super.key});  
+  HotelSection({super.key});
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final padding = EdgeInsets.all(isMobile ? 10 : 20);
+
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: padding,
       color: Colors.white,
       child: Column(
         children: [
@@ -308,139 +337,170 @@ class HotelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      height: 270,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(18)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            spreadRadius: 4,
-            blurRadius: 6,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            height: 170,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18),
-                topRight: Radius.circular(18),
-              ),
-              image: DecorationImage(
-                image: AssetImage(hotelData['picture']),
-                fit: BoxFit.cover,
-              ),
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final cardHeight = screenHeight * 0.35; // Dynamic height
+    final margin = EdgeInsets.all(isMobile ? 10 : 15);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: screenWidth),
+      child: Container(
+        margin: margin,
+        height: cardHeight,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(18)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              spreadRadius: 4,
+              blurRadius: 6,
+              offset: Offset(0, 3),
             ),
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 5,
-                  right: -15,
-                  child: MaterialButton(
-                    color: Colors.white,
-                    shape: CircleBorder(),
-                    onPressed: () {},
-                    child: Icon(
-                      Icons.favorite_border_outlined,
-                      color: d_green,
-                      size: 20,
+          ],
+        ),
+        child: Column(
+          children: [
+            Container(
+              height: cardHeight * 0.6, // Image takes 60% of card height
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(18),
+                  topRight: Radius.circular(18),
+                ),
+                image: DecorationImage(
+                  image: AssetImage(hotelData['picture']),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 5,
+                    right: -15,
+                    child: MaterialButton(
+                      color: Colors.white,
+                      shape: CircleBorder(),
+                      onPressed: () {},
+                      child: Icon(
+                        Icons.favorite_border_outlined,
+                        color: d_green,
+                        size: 20,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  hotelData['title'],
-                  style: GoogleFonts.nunito(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                Text(
-                  '\$' + hotelData['price'],
-                  style: GoogleFonts.nunito(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  hotelData['place'],
-                  style: GoogleFonts.nunito(
-                    fontSize: 14,
-                    color: Colors.grey[500],
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.place, color: d_green, size: 14.0),
-                    Text(
-                      '${hotelData['distance']}Km to city',
+            Container(
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      hotelData['title'],
                       style: GoogleFonts.nunito(
+                        fontSize: isMobile ? 16 : 18,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    '\$' + hotelData['price'],
+                    style: GoogleFonts.nunito(
+                      fontSize: isMobile ? 16 : 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex: 2,
+                    child: Text(
+                      hotelData['place'],
+                      style: GoogleFonts.nunito(
+                        fontSize: 14,
                         color: Colors.grey[500],
                         fontWeight: FontWeight.w400,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ],
-                ),
-                Text(
-                  'per night',
-                  style: GoogleFonts.nunito(
-                    color: Colors.grey[500],
-                    fontWeight: FontWeight.w400,
                   ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: 15,
-            margin: EdgeInsets.fromLTRB(10, 3, 10, 0),
-            child: Row(
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.star_rate, color: d_green, size: 14),
-                    Icon(Icons.star_rate, color: d_green, size: 14),
-                    Icon(Icons.star_rate, color: d_green, size: 14),
-                    Icon(Icons.star_rate, color: d_green, size: 14),
-                    Icon(Icons.star_border, color: d_green, size: 14),
-                  ],
-                ),
-                SizedBox(width: 20),
-                Text(
-                  '${hotelData['review']} riviews',
-                  style: GoogleFonts.nunito(
-                    color: Colors.grey[500],
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
+                  Flexible(
+                    flex: 2,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.place, color: d_green, size: 14.0),
+                        Text(
+                          '${hotelData['distance']}Km to city',
+                          style: GoogleFonts.nunito(
+                            color: Colors.grey[500],
+                            fontWeight: FontWeight.w400,
+                            fontSize: isMobile ? 12 : 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Flexible(
+                    flex: 1,
+                    child: Text(
+                      'per night',
+                      style: GoogleFonts.nunito(
+                        color: Colors.grey[500],
+                        fontWeight: FontWeight.w400,
+                        fontSize: isMobile ? 12 : 14,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Container(
+              height: 15,
+              margin: EdgeInsets.fromLTRB(10, 3, 10, 0),
+              child: Row(
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.star_rate, color: d_green, size: 14),
+                      Icon(Icons.star_rate, color: d_green, size: 14),
+                      Icon(Icons.star_rate, color: d_green, size: 14),
+                      Icon(Icons.star_rate, color: d_green, size: 14),
+                      Icon(Icons.star_border, color: d_green, size: 14),
+                    ],
+                  ),
+                  SizedBox(width: 20),
+                  Flexible(
+                    child: Text(
+                      '${hotelData['review']} reviews',
+                      style: GoogleFonts.nunito(
+                        color: Colors.grey[500],
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
