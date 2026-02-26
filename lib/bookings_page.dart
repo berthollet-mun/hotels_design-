@@ -208,20 +208,20 @@ class BookingsPage extends StatelessWidget {
                         style: GoogleFonts.nunito(color: Colors.grey[600]),
                       ),
                       SizedBox(height: 12),
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           _buildDateChip(
                             Icons.login,
                             booking['checkIn'],
                             'Check-in',
                           ),
-                          SizedBox(width: 8),
                           Icon(
                             Icons.arrow_forward,
                             color: Colors.grey,
                             size: 16,
                           ),
-                          SizedBox(width: 8),
                           _buildDateChip(
                             Icons.logout,
                             booking['checkOut'],
@@ -265,27 +265,34 @@ class BookingsPage extends StatelessWidget {
   }
 
   Widget _buildDateChip(IconData icon, String date, String label) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 14, color: d_green),
-            SizedBox(width: 4),
-            Text(
-              date,
-              style: GoogleFonts.nunito(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+    return Container(
+      constraints: BoxConstraints(maxWidth: 100),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 14, color: d_green),
+              SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  date,
+                  style: GoogleFonts.nunito(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 11,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-          ],
-        ),
-        Text(
-          label,
-          style: GoogleFonts.nunito(color: Colors.grey[500], fontSize: 10),
-        ),
-      ],
+            ],
+          ),
+          Text(
+            label,
+            style: GoogleFonts.nunito(color: Colors.grey[500], fontSize: 10),
+          ),
+        ],
+      ),
     );
   }
 }
