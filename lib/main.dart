@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hotel/calendar_page.dart';
+import 'package:hotel/hotel_details_page.dart';
+import 'package:hotel/favorites_page.dart';
+import 'package:hotel/bookings_page.dart';
+import 'package:hotel/profile_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,8 +25,84 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = [
+    ExplorePage(),
+    FavoritesPage(),
+    BookingsPage(),
+    ProfilePage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_currentIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              blurRadius: 10,
+              offset: Offset(0, -5),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: d_green,
+            unselectedItemColor: Colors.grey,
+            selectedLabelStyle: GoogleFonts.nunito(fontWeight: FontWeight.w600),
+            unselectedLabelStyle: GoogleFonts.nunito(),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.explore_outlined),
+                activeIcon: Icon(Icons.explore),
+                label: 'Explore',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite_outline),
+                activeIcon: Icon(Icons.favorite),
+                label: 'Favorites',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today_outlined),
+                activeIcon: Icon(Icons.calendar_today),
+                label: 'Trips',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                activeIcon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ExplorePage extends StatelessWidget {
+  const ExplorePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +150,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.white,
               size: 20,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoritesPage()),
+              );
+            },
           ),
 
           IconButton(
@@ -343,163 +428,173 @@ class HotelCard extends StatelessWidget {
     final cardHeight = screenHeight * 0.35; // Dynamic height
     final margin = EdgeInsets.all(isMobile ? 10 : 15);
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: screenWidth),
-      child: Container(
-        margin: margin,
-        height: cardHeight,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(18)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade200,
-              spreadRadius: 4,
-              blurRadius: 6,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Container(
-              height: cardHeight * 0.6, // Image takes 60% of card height
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(18),
-                  topRight: Radius.circular(18),
-                ),
-                image: DecorationImage(
-                  image: AssetImage(hotelData['picture']),
-                  fit: BoxFit.cover,
-                ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HotelDetailsPage(hotelData: hotelData),
+          ),
+        );
+      },
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: screenWidth),
+        child: Container(
+          margin: margin,
+          height: cardHeight,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(18)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade200,
+                spreadRadius: 4,
+                blurRadius: 6,
+                offset: Offset(0, 3),
               ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 5,
-                    right: -15,
-                    child: MaterialButton(
-                      color: Colors.white,
-                      shape: CircleBorder(),
-                      onPressed: () {},
-                      child: Icon(
-                        Icons.favorite_border_outlined,
-                        color: d_green,
-                        size: 20,
+            ],
+          ),
+          child: Column(
+            children: [
+              Container(
+                height: cardHeight * 0.6, // Image takes 60% of card height
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage(hotelData['picture']),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 5,
+                      right: -15,
+                      child: MaterialButton(
+                        color: Colors.white,
+                        shape: CircleBorder(),
+                        onPressed: () {},
+                        child: Icon(
+                          Icons.favorite_border_outlined,
+                          color: d_green,
+                          size: 20,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Text(
-                      hotelData['title'],
+              Container(
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        hotelData['title'],
+                        style: GoogleFonts.nunito(
+                          fontSize: isMobile ? 16 : 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      '\$' + hotelData['price'],
                       style: GoogleFonts.nunito(
                         fontSize: isMobile ? 16 : 18,
                         fontWeight: FontWeight.w800,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    '\$' + hotelData['price'],
-                    style: GoogleFonts.nunito(
-                      fontSize: isMobile ? 16 : 18,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: Text(
-                      hotelData['place'],
-                      style: GoogleFonts.nunito(
-                        fontSize: 14,
-                        color: Colors.grey[500],
-                        fontWeight: FontWeight.w400,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.place, color: d_green, size: 14.0),
-                        Text(
-                          '${hotelData['distance']}Km to city',
-                          style: GoogleFonts.nunito(
-                            color: Colors.grey[500],
-                            fontWeight: FontWeight.w400,
-                            fontSize: isMobile ? 12 : 14,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: Text(
+                        hotelData['place'],
+                        style: GoogleFonts.nunito(
+                          fontSize: 14,
+                          color: Colors.grey[500],
+                          fontWeight: FontWeight.w400,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.place, color: d_green, size: 14.0),
+                          Text(
+                            '${hotelData['distance']}Km to city',
+                            style: GoogleFonts.nunito(
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.w400,
+                              fontSize: isMobile ? 12 : 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: Text(
+                        'per night',
+                        style: GoogleFonts.nunito(
+                          color: Colors.grey[500],
+                          fontWeight: FontWeight.w400,
+                          fontSize: isMobile ? 12 : 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                height: 15,
+                margin: EdgeInsets.fromLTRB(10, 3, 10, 0),
+                child: Row(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.star_rate, color: d_green, size: 14),
+                        Icon(Icons.star_rate, color: d_green, size: 14),
+                        Icon(Icons.star_rate, color: d_green, size: 14),
+                        Icon(Icons.star_rate, color: d_green, size: 14),
+                        Icon(Icons.star_border, color: d_green, size: 14),
                       ],
                     ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: Text(
-                      'per night',
-                      style: GoogleFonts.nunito(
-                        color: Colors.grey[500],
-                        fontWeight: FontWeight.w400,
-                        fontSize: isMobile ? 12 : 14,
+                    SizedBox(width: 20),
+                    Flexible(
+                      child: Text(
+                        '${hotelData['review']} reviews',
+                        style: GoogleFonts.nunito(
+                          color: Colors.grey[500],
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.right,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Container(
-              height: 15,
-              margin: EdgeInsets.fromLTRB(10, 3, 10, 0),
-              child: Row(
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.star_rate, color: d_green, size: 14),
-                      Icon(Icons.star_rate, color: d_green, size: 14),
-                      Icon(Icons.star_rate, color: d_green, size: 14),
-                      Icon(Icons.star_rate, color: d_green, size: 14),
-                      Icon(Icons.star_border, color: d_green, size: 14),
-                    ],
-                  ),
-                  SizedBox(width: 20),
-                  Flexible(
-                    child: Text(
-                      '${hotelData['review']} reviews',
-                      style: GoogleFonts.nunito(
-                        color: Colors.grey[500],
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
